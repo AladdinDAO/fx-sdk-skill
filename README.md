@@ -54,4 +54,4 @@ The assistant will load `SKILL.md` from the skill directory when the context mat
 
 ## License
 
-See repository license file.
+MIT
