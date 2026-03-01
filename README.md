@@ -8,25 +8,25 @@ Agent skill for integrating the **FX Protocol TypeScript SDK** (`@aladdindao/fx-
 Copy this repo into project or personal skills:
 
 ```bash
-# Project scope (this repo)
-git clone git clone https://github.com/AladdinDAO/fx-sdk-skill.git .cursor/skills/fx-sdk-skill
+# Project scope — skill only in this repo
+git clone https://github.com/AladdinDAO/fx-sdk-skill.git .cursor/skills/fx-sdk-skill
 
-# Or personal scope
-git clone git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.cursor/skills/fx-sdk-skill
+# Personal scope — skill in all your projects
+git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.cursor/skills/fx-sdk-skill
 ```
 
 **Claude Code**  
 ```bash
 # Project
-git clone git clone https://github.com/AladdinDAO/fx-sdk-skill.git .claude/skills/fx-sdk-skill
+git clone https://github.com/AladdinDAO/fx-sdk-skill.git .claude/skills/fx-sdk-skill
 
 # Personal
-git clone git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.claude/skills/fx-sdk-skill
+git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.claude/skills/fx-sdk-skill
 ```
 
 **Codex CLI**  
 ```bash
-git clone git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.codex/skills/fx-sdk-skill
+git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.codex/skills/fx-sdk-skill
 ```
 
 The assistant will load `SKILL.md` from the skill directory when the context matches (e.g. “integrate fx-sdk”, “FX position”, “depositAndMint”).
