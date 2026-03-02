@@ -10,7 +10,7 @@ f(x) Protocol is a decentralized on-chain trading platform that enables stress-f
 
 - **Up to 7X Leverage**: Long or short exposure with minimum liquidation risk & funding costs
 - **fxUSD Stablecoin**: Scalable & decentralized stablecoin with a strong peg to the dollar
-- **Backed by Blue-Chip Assets**: Collateralized by wstETH and WBTC
+- **Overcollateralized**: Backed by wstETH and WBTC
 
 🌐 **Website**: [https://fx.aladdin.club/](https://fx.aladdin.club/)
 
