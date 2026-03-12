@@ -1,5 +1,7 @@
 # FX SDK Playbook
 
+Reference for request shapes, minimal code snippets, and validation. See `AGENTS.md` for when to use each operation.
+
 ## Minimal Read-Only Example
 
 ```ts
@@ -12,6 +14,7 @@ const positions = await sdk.getPositions({
   market: 'ETH',
   type: 'long',
 })
+// positions: PositionInfo[] (positionId, rawColls, rawDebts, currentLeverage, lsdLeverage, rawCollsToken, rawDebtsToken, rawCollsDecimals, rawDebtsDecimals)
 ```
 
 ## Minimal Transaction Planning Example
@@ -51,6 +54,12 @@ for (const tx of route.txs) {
 
 ## Request Templates
 
+### Get Positions
+
+```ts
+{ userAddress: string, market: 'ETH' | 'BTC', type: 'long' | 'short' }
+```
+
 ### Increase Position
 
 ```ts
@@ -63,6 +72,7 @@ for (const tx of route.txs) {
   amount: bigint,
   slippage: number,
   userAddress: string,
+  targets?: ROUTE_TYPES[],
 }
 ```
 
@@ -78,6 +88,19 @@ for (const tx of route.txs) {
   slippage: number,
   userAddress: string,
   isClosePosition?: boolean,
+}
+```
+
+### Adjust Position Leverage
+
+```ts
+{
+  market: 'ETH' | 'BTC',
+  type: 'long' | 'short',
+  positionId: number,
+  leverage: number,
+  slippage: number,
+  userAddress: string,
 }
 ```
 
@@ -107,16 +130,101 @@ for (const tx of route.txs) {
 }
 ```
 
+### Bridge (Base <-> Ethereum)
+
+```ts
+// Quote
+{ sourceChainId: 1 | 8453, destChainId: 1 | 8453, token: string, amount: bigint, recipient: string, sourceRpcUrl?: string }
+// Build tx
+{ ...quote, refundAddress?: string }
+```
+
+### fxSAVE — Config (totals & cooldown)
+
+```ts
+// No params required
+sdk.getFxSaveConfig()
+// → { totalSupplyWei, totalAssetsWei, cooldownPeriodSeconds, instantRedeemFeeRatio, expenseRatio, harvesterRatio, threshold } (all bigint wei)
+```
+
+### fxSAVE — Balance
+
+```ts
+{ userAddress: string }
+// → { balanceWei: bigint, assetsWei?: bigint }
+```
+
+### fxSAVE — Redeem Status (Cooldown)
+
+```ts
+{ userAddress: string }
+// → { hasPendingRedeem, pendingSharesWei, cooldownPeriodSeconds, redeemableAt, isCooldownComplete }
+```
+
+### fxSAVE — Claimable (Status + Preview Receive)
+
+```ts
+{ userAddress: string }
+// → redeem status + optional previewReceive: { amountYieldOutWei, amountStableOutWei }
+```
+
+### fxSAVE — Get Redeem Tx (Claim after cooldown)
+
+```ts
+{ userAddress: string, receiver?: string }
+// → { txs } when isCooldownComplete; else throws
+```
+
+### fxSAVE — Deposit
+
+```ts
+{
+  userAddress: string,
+  tokenIn: 'usdc' | 'fxUSD' | 'fxUSDBasePool',
+  amount: bigint,
+  slippage?: number,
+}
+// → { txs }; execute in order (approve then deposit)
+```
+
+### fxSAVE — Withdraw
+
+```ts
+{
+  userAddress: string,
+  tokenOut: 'usdc' | 'fxUSD' | 'fxUSDBasePool',
+  amount: bigint,  // fxSAVE shares wei
+  instant?: boolean,
+  slippage?: number,  // required when instant is true
+}
+// → { txs }; fxUSDBasePool → redeem; usdc/fxUSD !instant → requestRedeem; usdc/fxUSD instant → approve + instantRedeemFromFxSave
+```
+
 ## Validation Checklist
 
-1. Run type/tests locally:
-- `npm test`
-2. Run SDK examples with env configured in `example/.env`:
-- `npm run example:positions`
-- `npm run example:increase`
-3. Confirm tx array ordering:
-- approve tx first (if present)
-- trade tx last
-- nonces strictly increasing
-4. Confirm token-market compatibility before sending tx.
-5. Confirm slippage bounds (`0 < slippage < 100`).
+1. **Types and tests**
+   - `npm test` or `pnpm test`
+
+2. **Examples (set `example/.env` first)**
+   - Positions: `npm run example:positions`
+   - Increase: `npm run example:increase`
+   - Reduce: `npm run example:reduce`
+   - Adjust: `npm run example:adjust`
+   - Deposit and mint: `npm run example:deposit`
+   - Repay and withdraw: `npm run example:repay`
+   - Bridge: `npm run example:bridge`
+  - fxSAVE balance: `npm run example:fxsave-balance`
+  - fxSAVE config: `npm run example:fxsave-config`
+  - fxSAVE deposit: `npm run example:fxsave-deposit`
+   - fxSAVE withdraw: `npm run example:fxsave-withdraw`
+   - fxSAVE claim: `npm run example:fxsave-claim`
+
+3. **Tx ordering**
+   - Approve tx first (if present)
+   - Main tx last
+   - Nonces strictly increasing
+
+4. **Inputs**
+   - Token-market compatibility (see AGENTS.md Parameter rules)
+   - Slippage in (0, 100)
+   - Amounts as bigint wei; from agent-tools convert strings with `BigInt(value)`

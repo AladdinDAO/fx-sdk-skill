@@ -41,23 +41,24 @@ git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.claude/skills/fx-sdk
 git clone https://github.com/AladdinDAO/fx-sdk-skill.git ~/.codex/skills/fx-sdk-skill
 ```
 
-The assistant will load `SKILL.md` from the skill directory when the context matches (e.g. “integrate fx-sdk”, “FX position”, “depositAndMint”).
+The assistant will load `SKILL.md` from the skill directory when the context matches (e.g. “integrate fx-sdk”, “FX position”, “depositAndMint”, “fxSAVE”, “bridge”).
 
 ## When to Use
 
 - Integrate `@aladdindao/fx-sdk` into an agent or tool.
-- Generate transaction execution code for increase/reduce/adjust/deposit/repay.
+- Generate transaction execution code for positions (increase/reduce/adjust), deposit/repay, bridge (Base <-> Ethereum), and fxSAVE (config/totals, balance, redeem status, claimable, deposit, withdraw, claim).
 - Debug SDK parameters or validate FX trading workflows.
 - Build adapter functions with typed input, dry-run, and nonce-ordered execution.
 
 ## Repo Structure
 
-| Path | Purpose |
-|------|--------|
-| `SKILL.md` | Main skill instructions (required). |
-| `references/sdk-playbook.md` | Request shapes and test checklist. |
-| `references/agent-adapter-example.ts` | Example adapter and usage. |
-| `agents/openai.yaml` | Chip/config for agent UIs. |
+| Path                                  | Purpose                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------- |
+| `SKILL.md`                            | Main skill instructions (required).                                    |
+| `references/README.md`                | Index of reference files and when to use each.                          |
+| `references/sdk-playbook.md`          | Request shapes for all methods, minimal snippets, validation checklist.  |
+| `references/agent-adapter-example.ts` | Typed adapter: FxAction union, runFxAction, sample payloads.            |
+| `agents/openai.yaml`                  | Chip/config for agent UIs.                                             |
 
 ## Requirements
 
